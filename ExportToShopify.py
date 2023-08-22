@@ -69,7 +69,7 @@ try:
     print(Fore.BLACK+"Files in dir: ", len(files))
 
     # confirm with user
-    print(Fore.BLACK+"\nStarting Generation of ",len(files)," Products. Total of ",len(files)*len(colors)*len(sizes)," SKUs.")
+    print(Fore.BLACK+"\nGenerating ",len(files)," Products. Total of ",len(files)*len(colors)*len(sizes)," SKUs.")
     print(Fore.BLACK+"")
     print(Fore.BLACK+"\tFolder Name:\t" + folder)
     print(Fore.BLACK+"\tCategory Name:\t" + category)
@@ -77,13 +77,14 @@ try:
     goAhead = input(Fore.BLACK + "\nShould I Proceed? (Y/N): ")
     goAhead = goAhead.strip().lower(); # trim and lower case
 
-    if (goAhead != "yes" or goAhead != "y"):
+    if (goAhead != "yes" and goAhead != "y"):
         print(Fore.BLACK + "\nAs you wish. If Catgeory & SKU did not match, please change variables in python script")
         print(Fore.BLACK + "\nExiting...")
         sys.exit()
     
     # array to randomise color positions
     colorPosition = list(range(len(colors))) # [0,1,2,3,...]
+    skippedFileCount = 0 #keep count of skipped files 
 
     # Open the CSV file in write mode
     with open(folder+"\ExportToShopify.csv", "w", newline='') as f:
@@ -98,8 +99,9 @@ try:
             # get the file name without extension
             fileName = os.path.splitext(file)
             if (fileName[1] != ".png"):
+                skippedFileCount += 1 #increment by 1
                 print (Fore.LIGHTMAGENTA_EX+"WARNING: Ignoring Unexpected File. Was expecting .png. Found "+fileName[0]+fileName[1]+" : index "+str(fileIndex))
-                break
+                continue
 
             # for every design, shuffle the image position index (variety of colors will be shown)
             random.shuffle(colorPosition)
@@ -123,7 +125,7 @@ try:
                         row[7] = "Color" # Option1 Name
                         row[9] = "Size" #Option 2 Name
                         # create SKU Name (prefix(5) + design(3) + color(2) + size(2) )
-                        row[13] = sku_prefix + f'{fileIndex:03}' + f'{colorIndex:02}' + f'{sizeIndex:02}'
+                        row[13] = sku_prefix + f'{(fileIndex+1-skippedFileCount):03}' + f'{(colorIndex+1):02}' + f'{(sizeIndex+1):02}'
                         row[27] = "FALSE" #GIFT CARD
                         row[28] = "" # TODO SEO Title
                         row[29] = "" # TODO SEO Description
@@ -158,6 +160,14 @@ try:
         # close the CSV file
         f.close()
 
-    print(Fore.GREEN+"\nDone! CSV created at "+ folder+"\ExportToShopify.csv")
+    # Write Export Summary
+    print(Fore.GREEN+'##################################################')
+    print(Fore.GREEN+'Export CSV SUCCESSFUL:')
+    print(Fore.GREEN+"\tFiles Processed: ",(len(files) - skippedFileCount))
+    print(Fore.GREEN+"\tFiles Skipped: ",skippedFileCount)
+    print(Fore.GREEN+"\tTotal SKUs Generated: ",(len(files) - skippedFileCount)*len(colors)*len(sizes))
+    print(Fore.GREEN+"\tExport File Path: "+ folder+"\ExportToShopify.csv")
+    print(Fore.GREEN+'##################################################')
+
 finally:
     print(Style.RESET_ALL)
