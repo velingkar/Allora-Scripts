@@ -124,8 +124,6 @@ try:
                         row[6] = "TRUE" # Published
                         row[7] = "Color" # Option1 Name
                         row[9] = "Size" #Option 2 Name
-                        # create SKU Name (prefix(5) + design(3) + color(2) + size(2) )
-                        row[13] = sku_prefix + f'{(fileIndex+1-skippedFileCount):03}' + f'{(colorIndex+1):02}' + f'{(sizeIndex+1):02}'
                         row[27] = "FALSE" #GIFT CARD
                         row[28] = "" # TODO SEO Title
                         row[29] = "" # TODO SEO Description
@@ -140,6 +138,8 @@ try:
                     # fill information for SKUs
                     row[8] = color
                     row[10] = size
+                    # create SKU Name (prefix(5) + design(3) + color(2) + size(2) )
+                    row[13] = sku_prefix + f'{(fileIndex+1-skippedFileCount):03}' + f'{(colorIndex+1):02}' + f'{(sizeIndex+1):02}'    
                     row[14] = weight
                     row[16] = variant_qty
                     row[17] = "deny" #variant policy
@@ -161,13 +161,13 @@ try:
         f.close()
 
     # Write Export Summary
-    print(Fore.GREEN+'##################################################')
-    print(Fore.GREEN+'Export CSV SUCCESSFUL:')
-    print(Fore.GREEN+"\tFiles Processed: ",(len(files) - skippedFileCount))
-    print(Fore.GREEN+"\tFiles Skipped: ",skippedFileCount)
-    print(Fore.GREEN+"\tTotal SKUs Generated: ",(len(files) - skippedFileCount)*len(colors)*len(sizes))
-    print(Fore.GREEN+"\tExport File Path: "+ folder+"\ExportToShopify.csv")
-    print(Fore.GREEN+'##################################################')
+    print(Fore.BLUE+'##################################################')
+    print(Fore.BLUE+'Export CSV SUCCESSFUL:')
+    print(Fore.BLUE+"Files Processed: ",(len(files) - skippedFileCount))
+    print(Fore.BLUE+"Files Skipped: ",skippedFileCount)
+    print(Fore.BLUE+"Total SKUs Generated: ",(len(files) - skippedFileCount)*len(colors)*len(sizes))
+    print(Fore.BLUE+"Export File Path: "+ folder+"\ExportToShopify.csv")
+    print(Fore.BLUE+'##################################################')
 
 finally:
     print(Style.RESET_ALL)
