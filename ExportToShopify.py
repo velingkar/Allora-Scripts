@@ -2,7 +2,7 @@
 import csv
 import os
 import sys
-from turtle import window_height
+import random
 
 # initialise key swatches
 sizes = ["2-3 Years", "4-5 Years","6-7 Years","7-8 Years","9-10 Years","11-12 Years"]
@@ -57,6 +57,9 @@ files = os.listdir(folder+"\designs")
 print("Columns in CSV File: ", numColumns)
 print("Files in dir: ", len(files))
 
+# array to randomise color positions
+colorPosition = list(range(len(colors))) # [0,1,2,3,...]
+
 # Open the CSV file in write mode
 with open(folder+"\ExportToShopify.csv", "w", newline='') as f:
     # Create a csv writer object
@@ -70,12 +73,15 @@ with open(folder+"\ExportToShopify.csv", "w", newline='') as f:
         # get the file name without extension
         fileName = os.path.splitext(file)
         if (fileName[1] != ".png"):
-            print ("WARNING: Ignoring Unexpected File. Was expecting .png. Found "+fileName[0]+fileName[1])
+            print ("WARNING: Ignoring Unexpected File. Was expecting .png. Found "+fileName[0]+fileName[1]+" : index "+str(fileIndex))
             break
 
+        # for every design, shuffle the image position index (variety of colors will be shown)
+        random.shuffle(colorPosition)
+
         # start creating swatches using size and color combinations
-        for colorIndex, color in enumerate(colors):
-            for sizeIndex, size in enumerate(sizes):
+        for sizeIndex, size in enumerate(sizes):
+            for colorIndex, color in enumerate(colors):
                 row = [""] * numColumns
                 # TODO - how to randomize color image for main product
 
@@ -99,6 +105,11 @@ with open(folder+"\ExportToShopify.csv", "w", newline='') as f:
                     row[45] = "TRUE" # for India
                     row[46] = "FALSE" # not for international (yet)
 
+                # add image path for main product for each color, randomise color positions
+                if sizeIndex == 0:
+                    row[24] = image_path
+                    row[25] = colorPosition[colorIndex] # randomised image position
+
                 # fill information for SKUs
                 row[8] = color
                 row[10] = size
@@ -110,13 +121,16 @@ with open(folder+"\ExportToShopify.csv", "w", newline='') as f:
                 row[20] = compare_price
                 row[21] = "TRUE" # requires shipping
                 row[22] = "TRUE" # is taxable
-                row[24] = image_path #TODO Product Image - need to randomise this
-                # TODO Product Image position
-                row[41] = image_path #TODO write a function to give proper path, rename, check file etc.
                 row[44] = cost
                 row[49] = "draft" # do not publish as active
 
+                # add variant image path
+                row[41] = image_path #TODO write a function to give proper path, rename, check file etc.
+
                 # write to CSV 
                 writer.writerow(row)
+    
+    # close the CSV file
+    f.close()
 
 print("Done! CSV created at "+ folder+"\ExportToShopify.csv")
