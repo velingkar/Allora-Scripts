@@ -23,7 +23,7 @@ colors = ["Red", "Blue", "Light Blue", "Pink", "Yellow", "Navy"]
 # initialise key arrays
 category = "Medieval Wonders"
 sku_prefix = "KTMDW"
-handle_postfix	= "medieval-wonders"
+handle_prefix	= "medieval-wonders-"
 tags = "Medieval Wonders"
 weight = 250
 cost =	400
@@ -48,7 +48,7 @@ body = "<ul>\
 vendor = "My Store"
 product_category = "Apparel & Accessories > Clothing > Shirts & Tops"
 Product_type = "kids causual tshirts"
-headers = ["Title","Body (HTML)","Vendor","Product Category","Type","Tags","Published","Option1 Name","Option1 Value","Option2 Name","Option2 Value","Option3 Name","Option3 Value","Variant SKU","Variant Grams","Variant Inventory Tracker","Variant Inventory Qty","Variant Inventory Policy","Variant Fulfillment Service","Variant Price","Variant Compare At Price","Variant Requires Shipping","Variant Taxable","Variant Barcode","Image Src","Image Position","Image Alt Text","Gift Card","SEO Title","SEO Description","Google Shopping / Google Product Category","Google Shopping / Gender","Google Shopping / Age Group","Google Shopping / MPN","Google Shopping / Condition","Google Shopping / Custom Product","Google Shopping / Custom Label 0","Google Shopping / Custom Label 1","Google Shopping / Custom Label 2","Google Shopping / Custom Label 3","Google Shopping / Custom Label 4","Variant Image","Variant Weight Unit","Variant Tax Code","Cost per item","Included / India","Included / International","Price / International","Compare At Price / International","Status"]
+headers = ["Handle","Title","Body (HTML)","Vendor","Product Category","Type","Tags","Published","Option1 Name","Option1 Value","Option2 Name","Option2 Value","Option3 Name","Option3 Value","Variant SKU","Variant Grams","Variant Inventory Tracker","Variant Inventory Qty","Variant Inventory Policy","Variant Fulfillment Service","Variant Price","Variant Compare At Price","Variant Requires Shipping","Variant Taxable","Variant Barcode","Image Src","Image Position","Image Alt Text","Gift Card","SEO Title","SEO Description","Google Shopping / Google Product Category","Google Shopping / Gender","Google Shopping / Age Group","Google Shopping / MPN","Google Shopping / Condition","Google Shopping / Custom Product","Google Shopping / Custom Label 0","Google Shopping / Custom Label 1","Google Shopping / Custom Label 2","Google Shopping / Custom Label 3","Google Shopping / Custom Label 4","Variant Image","Variant Weight Unit","Variant Tax Code","Cost per item","Included / India","Included / International","Price / International","Compare At Price / International","Status"]
 numColumns = len(headers)
 
 # Start Prompt
@@ -118,7 +118,12 @@ try:
                 continue
 
             # for every design, shuffle the image position index (variety of colors will be shown)
+            # TODO This did not work - need to get this ahead of time 
             random.shuffle(colorPosition)
+
+            #make unique handle
+            # TODO replace spaces with -
+            handle = handle_prefix + fileName[0].strip().lower()
 
             # start creating swatches using size and color combinations
             for sizeIndex, size in enumerate(sizes):
@@ -133,44 +138,45 @@ try:
 
                     # fill below information for main product only
                     if colorIndex == 0 and sizeIndex == 0:
-                        row[0] = fileName[0] + " - " + category + " - " + product
-                        row[1] = body
-                        row[2] = vendor
-                        row[3] = product_category
-                        row[4] = Product_type
-                        row[5] = tags
-                        row[6] = "TRUE" # Published
-                        row[7] = "Color" # Option1 Name
-                        row[9] = "Size" #Option 2 Name
-                        row[27] = "FALSE" #GIFT CARD
-                        row[28] = "" # TODO SEO Title
-                        row[29] = "" # TODO SEO Description
-                        row[45] = "TRUE" # for India
-                        row[46] = "FALSE" # not for international (yet)
+                        row[1] = fileName[0] + " - " + category + " - " + product
+                        row[2] = body
+                        row[3] = vendor
+                        row[4] = product_category
+                        row[5] = Product_type
+                        row[6] = tags
+                        row[7] = "TRUE" # Published
+                        row[8] = "Color" # Option1 Name
+                        row[10] = "Size" #Option 2 Name
+                        row[28] = "FALSE" #GIFT CARD
+                        row[29] = "" # TODO SEO Title
+                        row[30] = "" # TODO SEO Description
+                        row[46] = "TRUE" # for India
+                        row[47] = "FALSE" # not for international (yet)
 
                     # add image path for main product for each color, randomise color positions
                     if sizeIndex == 0:
-                        row[24] = skuImageFile
-                        row[25] = colorPosition[colorIndex] # randomised image position
+                        row[25] = skuImageFile
+                        row[26] = colorPosition[colorIndex] # randomised image position
 
                     # fill information for SKUs
-                    row[8] = color
-                    row[10] = size
+                    row[0] = handle
+                    row[9] = color
+                    row[11] = size
                     # create SKU Name (prefix(5) + design(3) + color(2) + size(2) )
-                    row[13] = sku_prefix + f'{(fileIndex+1-skippedFileCount):03}' + f'{(colorIndex+1):02}' + f'{(sizeIndex+1):02}'    
-                    row[14] = weight
-                    row[16] = variant_qty
-                    row[17] = "deny" #variant policy
-                    row[18] = "manual" #fullfillment
-                    row[19] = price
-                    row[20] = compare_price
-                    row[21] = "TRUE" # requires shipping
-                    row[22] = "TRUE" # is taxable
-                    row[44] = cost
-                    row[49] = "draft" # do not publish as active
+                    row[14] = sku_prefix + f'{(fileIndex+1-skippedFileCount):03}' + f'{(colorIndex+1):02}' + f'{(sizeIndex+1):02}'    
+                    row[15] = weight
+                    row[17] = variant_qty
+                    row[18] = "deny" #variant policy
+                    row[19] = "manual" #fullfillment
+                    row[20] = price
+                    row[21] = compare_price
+                    row[22] = "TRUE" # requires shipping
+                    row[23] = "TRUE" # is taxable
+                    row[45] = cost
+                    row[50] = "draft" # do not publish as active
 
                     # add variant image path
-                    row[41] = skuImageFile
+                    row[42] = skuImageFile
 
                     # write to CSV 
                     writer.writerow(row)
