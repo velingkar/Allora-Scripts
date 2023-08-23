@@ -5,15 +5,26 @@ import sys
 import random
 from colorama import Fore, Back, Style
 
+def GetSKUImageName(mediaFiles, fileName, sku_prefix, colorIndex):
+    imageColors = ["Red", "Blue", "LightBlue", "Pink", "Yellow", "Navy"]
+
+    # check if file exists with required name
+    mediaName = sku_prefix+"_"+fileName+"_"+imageColors[colorIndex]+".png"
+    if (sku_prefix+"_"+fileName+"_"+imageColors[colorIndex]+".png") in mediaFiles:
+        return mediaName
+    else:
+        print (Fore.LIGHTMAGENTA_EX+"WARNING: SKU Media File Not Found "+ mediaName)
+        return ""
+
 # initialise key swatches
 sizes = ["2-3 Years", "4-5 Years","6-7 Years","7-8 Years","9-10 Years","11-12 Years"]
 colors = ["Red", "Blue", "Light Blue", "Pink", "Yellow", "Navy"]
 
 # initialise key arrays
-category = "Sweeth Tooth"
-sku_prefix = "KTSWT"
-handle_postfix	= "sweeth-tooth"
-tags = "Sweeth Tooth"
+category = "Medieval Wonders"
+sku_prefix = "KTMDW"
+handle_postfix	= "medieval-wonders"
+tags = "Medieval Wonders"
 weight = 250
 cost =	400
 price =	899
@@ -61,8 +72,11 @@ try:
         print(Fore.RED + "\nERROR: Media Sub-Folder is not found. Create t-shirt mockups first.")
         sys.exit()
 
-    # Get the file names in the folder
+    # Get the file names in the design folder
     files = os.listdir(folder+"\designs")
+
+    # Get the file names in the media folder
+    mediaFiles = os.listdir(folder+"\designs\media")
 
     # print some info
     print(Fore.BLACK+"\nColumns in CSV File: ", numColumns)
@@ -110,13 +124,17 @@ try:
             for sizeIndex, size in enumerate(sizes):
                 for colorIndex, color in enumerate(colors):
                     row = [""] * numColumns
-                    # TODO - how to randomize color image for main product
+
+                    # get SKU Image path
+                    skuImageFile = ""
+                    imageFileName = GetSKUImageName(mediaFiles, fileName[0], sku_prefix, colorIndex)
+                    if (imageFileName != ""):
+                        skuImageFile = image_path + imageFileName
 
                     # fill below information for main product only
                     if colorIndex == 0 and sizeIndex == 0:
                         row[0] = fileName[0] + " - " + category + " - " + product
-                        # TODO REMOVE COMMENT BELOW, added to reduce noise for testing
-                        # row[1] = body
+                        row[1] = body
                         row[2] = vendor
                         row[3] = product_category
                         row[4] = Product_type
@@ -132,7 +150,7 @@ try:
 
                     # add image path for main product for each color, randomise color positions
                     if sizeIndex == 0:
-                        row[24] = image_path
+                        row[24] = skuImageFile
                         row[25] = colorPosition[colorIndex] # randomised image position
 
                     # fill information for SKUs
@@ -152,7 +170,7 @@ try:
                     row[49] = "draft" # do not publish as active
 
                     # add variant image path
-                    row[41] = image_path #TODO write a function to give proper path, rename, check file etc.
+                    row[41] = skuImageFile
 
                     # write to CSV 
                     writer.writerow(row)
