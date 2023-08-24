@@ -17,7 +17,7 @@ body = "<ul>\
 # initialise key swatches
 sizes = ["4-5 Years","6-7 Years","7-8 Years","9-10 Years"]
 colors = ["Red", "Blue", "Light Blue", "Pink", "Yellow"]
-imageColors = ["Red", "Blue", "LightBlue", "Pink", "Yellow", "Navy"]
+imageColors = ["Red", "Blue", "LightBlue", "Pink", "Yellow"]
 
 # initialise constants - these are rarely changed
 weight = 250
