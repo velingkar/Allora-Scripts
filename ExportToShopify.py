@@ -39,7 +39,7 @@ try:
     # check if media sub-folder exists
     if (not os.path.isfile(folder+"\settings.py")):
         print(Fore.RED + "\nERROR: settings.py file was not found. Please create config.py file in directory.")
-        print(Fore.RED + "\nFor example template: https://github.com/velingkar/Allora-Scripts/blob/main/settings.py")
+        print(Fore.RED + "\nFor example template: https://github.com/velingkar/Allora-Scripts/blob/main/settings_template.py")
         sys.exit()
 
     # import key variables

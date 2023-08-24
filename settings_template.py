@@ -1,3 +1,5 @@
+# Important before usage, please rename to settings.py
+
 # Always changed variables
 category = "Medieval Wonders"
 sku_prefix = "KTMDW"
