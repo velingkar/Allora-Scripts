@@ -22,7 +22,8 @@ def GetUniqueFileSKU(files):
     fileSKUs = []
     for file in files:
         fileSKU = ""
-        words = file.split(" ")
+        words = file.replace("-", " ").split(" ") #bit of a hack, TODO replace with regex that handles all separators
+        print("Processing: ",file,words)
         if (len(words) > 2):
             fileSKU = words[0][0] + words[1][0] + words[2][0]; # get first letter each from first 3 words
         elif (len(words) > 1):
@@ -56,6 +57,19 @@ def GetUniqueFileSKU(files):
     
     # done
     return fileSKUs
+
+# Get Variant SKU (14 Characters)
+# Goal - to make variant Signature as easy to read as possible
+# SKU SIGNATURE - prefix(5) + design(4) + design Variant (1) + color(2) + size(2)
+# Prefix - Category(2) + Collection (3) => KT-SPT => KT (Kids T-shirt), SPT (Space Traveller)
+# Design - Name(3) + Name-Tie-Breaker(1) => AST1 => AST (Astronaut), 1
+# Design Variant - Allows Design Variants for different colors => D (default), L(Light), D(Dark)
+# Color - Color(2) => RE(2) => Red
+# Size - Size(2) => 3-4 Years => 34
+# Final Variant SKU - KTSPT-AST1-D-RE-34 (14 Characters)
+def GetVariantSKU(prefix, filesku, designType, colorsku, sizesku):
+    variantSKU = prefix+"-"+filesku[0:4].upper()+"-"+designType[0:1].upper()+"-"+colorsku[0:2].upper()+"-"+sizesku[0:2].upper()
+    return variantSKU
 
 # Start Prompt
 Style.RESET_ALL
@@ -182,8 +196,8 @@ try:
                     row[0] = handle
                     row[9] = color
                     row[11] = size
-                    # create SKU Name (prefix(5) + design(4) + color(2) + size(2) )
-                    row[14] = settings.sku_prefix + fileSKUs[fileIndex] + f'{(colorIndex+1):02}' + f'{(sizeIndex+1):02}'    
+                    # create variant SKU Name
+                    row[14] = GetVariantSKU(settings.sku_prefix, fileSKUs[fileIndex], settings.skuDesigns[colorIndex],settings.skuColors[colorIndex],settings.skuSizes[sizeIndex]);
                     row[15] = settings.weight
                     row[17] = settings.variant_qty
                     row[18] = "deny" #variant policy
