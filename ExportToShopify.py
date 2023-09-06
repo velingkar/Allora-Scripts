@@ -163,10 +163,11 @@ try:
             for sizeIndex, size in enumerate(settings.sizes):
                 for colorIndex, color in enumerate(settings.colors):
                     row = [""] * numColumns
+                    curColorPos = colorPosition[colorIndex] # randomised color position for this design
 
                     # get SKU Image path
                     skuImageFile = ""
-                    imageFileName = GetSKUImageName(mediaFiles, fileName[0], settings.sku_prefix, settings.imageColors, colorIndex)
+                    imageFileName = GetSKUImageName(mediaFiles, fileName[0], settings.sku_prefix, settings.imageColors, curColorPos)
                     if (imageFileName != ""):
                         skuImageFile = settings.image_path + imageFileName
 
@@ -190,14 +191,14 @@ try:
                     # add image path for main product for each color, randomise color positions
                     if sizeIndex == 0:
                         row[25] = skuImageFile
-                        row[26] = colorPosition[colorIndex] # randomised image position
+                        row[26] = colorIndex # file itself is now randomised
 
                     # fill information for SKUs
                     row[0] = handle
-                    row[9] = color
+                    row[9] = settings.colors[curColorPos]
                     row[11] = size
                     # create variant SKU Name
-                    row[14] = GetVariantSKU(settings.sku_prefix, fileSKUs[fileIndex], settings.skuDesigns[colorIndex],settings.skuColors[colorIndex],settings.skuSizes[sizeIndex]);
+                    row[14] = GetVariantSKU(settings.sku_prefix, fileSKUs[fileIndex], settings.skuDesigns[curColorPos],settings.skuColors[curColorPos],settings.skuSizes[sizeIndex]);
                     row[15] = settings.weight
                     row[17] = settings.variant_qty
                     row[18] = "deny" #variant policy
