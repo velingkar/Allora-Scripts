@@ -9,10 +9,19 @@ from colorama import Fore, Back, Style
 def GetSKUImageName(mediaFiles, fileName, sku_prefix, imageColors, colorIndex):
     # check if file exists with required name
     mediaName = sku_prefix+"_"+fileName+"_"+imageColors[colorIndex]+".png"
-    if (sku_prefix+"_"+fileName+"_"+imageColors[colorIndex]+".png") in mediaFiles:
+    if (mediaName) in mediaFiles:
         return mediaName
     else:
         print (Fore.LIGHTMAGENTA_EX+"WARNING: SKU Media File Not Found "+ mediaName)
+        return ""
+    
+def GetSKUDetailImageName(detailMediaFiles, fileName, sku_prefix, imageColors, colorIndex):
+    # check if file exists with required name
+    mediaName = sku_prefix+"_"+fileName+"_"+imageColors[colorIndex]+"_detail"+".png"
+    if (mediaName) in detailMediaFiles:
+        return mediaName
+    else:
+        print (Fore.LIGHTMAGENTA_EX+"WARNING: SKU Detail Media File Not Found "+ mediaName)
         return ""
 
 # Get Unique 4 letter representation based on design file name
@@ -23,7 +32,6 @@ def GetUniqueFileSKU(files):
     for file in files:
         fileSKU = ""
         words = file.replace("-", " ").split(" ") #bit of a hack, TODO replace with regex that handles all separators
-        print("Processing: ",file,words)
         if (len(words) > 2):
             fileSKU = words[0][0] + words[1][0] + words[2][0]; # get first letter each from first 3 words
         elif (len(words) > 1):
@@ -91,6 +99,11 @@ try:
     if (not os.path.isdir(folder+"\designs\media")):
         print(Fore.RED + "\nERROR: Media Sub-Folder is not found. Create t-shirt mockups first.")
         sys.exit()
+
+    # check if details sub-folder exists
+    if (not os.path.isdir(folder+"\designs\media\detail")):
+        print(Fore.RED + "\nERROR: detail Sub-Folder is not found. Run t-shirt closeup script first.")
+        sys.exit()
     
     # check if media sub-folder exists
     if (not os.path.isfile(folder+"\settings.py")):
@@ -111,6 +124,7 @@ try:
 
     # Get the file names in the media folder
     mediaFiles = os.listdir(folder+"\designs\media")
+    detailMediaFiles = os.listdir(folder+"\designs\media\detail")
 
     # print some info
     print(Fore.BLACK+"\nColumns in CSV File: ", numColumns)
@@ -170,7 +184,7 @@ try:
                     imageFileName = GetSKUImageName(mediaFiles, fileName[0], settings.sku_prefix, settings.imageColors, curColorPos)
                     if (imageFileName != ""):
                         skuImageFile = settings.image_path + imageFileName
-
+                                   
                     # fill below information for main product only
                     if colorIndex == 0 and sizeIndex == 0:
                         row[1] = fileName[0] + " - " + settings.category + " - " + settings.product
@@ -189,9 +203,21 @@ try:
                         row[47] = "FALSE" # not for international (yet)
 
                     # add image path for main product for each color, randomise color positions
+                    imgAltText = fileName[0] + "-" + settings.category + "-" + settings.product + "-" + settings.vendor + "-" + settings.colors[curColorPos]
+                    imgAltText = imgAltText.replace(" ", "-").lower() # replace spaces with hyphens (otherwise query selector breaks) 
                     if sizeIndex == 0:
+                        # add product image
                         row[25] = skuImageFile
                         row[26] = colorIndex # file itself is now randomised
+                        row[27] = imgAltText
+                    elif sizeIndex == 1:
+                        # get SKU Detail Image path
+                        skuDetailImageFile = GetSKUDetailImageName(detailMediaFiles, fileName[0], settings.sku_prefix, settings.imageColors, curColorPos)
+                        # add detail file to row
+                        if (skuDetailImageFile != ""):
+                            row[25] = settings.image_path + skuDetailImageFile
+                            row[26] = len(settings.colors) + colorIndex # file itself is now randomised
+                            row[27] = imgAltText
 
                     # fill information for SKUs
                     row[0] = handle
@@ -200,6 +226,7 @@ try:
                     # create variant SKU Name
                     row[14] = GetVariantSKU(settings.sku_prefix, fileSKUs[fileIndex], settings.skuDesigns[curColorPos],settings.skuColors[curColorPos],settings.skuSizes[sizeIndex]);
                     row[15] = settings.weight
+                    row[16] = "shopify" # variant tracking done via shopify
                     row[17] = settings.variant_qty
                     row[18] = "deny" #variant policy
                     row[19] = "manual" #fullfillment
