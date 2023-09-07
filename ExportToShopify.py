@@ -221,7 +221,7 @@ try:
 
                     # fill information for SKUs
                     row[0] = handle
-                    row[9] = settings.colors[curColorPos]
+                    row[9] = settings.imageColors[curColorPos]
                     row[11] = size
                     # create variant SKU Name
                     row[14] = GetVariantSKU(settings.sku_prefix, fileSKUs[fileIndex], settings.skuDesigns[curColorPos],settings.skuColors[curColorPos],settings.skuSizes[sizeIndex]);
