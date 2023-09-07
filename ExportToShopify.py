@@ -208,7 +208,7 @@ try:
                     if sizeIndex == 0:
                         # add product image
                         row[25] = skuImageFile
-                        row[26] = colorIndex # file itself is now randomised
+                        row[26] = colorIndex + 1 # file itself is now randomised
                         row[27] = imgAltText
                     elif sizeIndex == 1:
                         # get SKU Detail Image path
@@ -216,7 +216,7 @@ try:
                         # add detail file to row
                         if (skuDetailImageFile != ""):
                             row[25] = settings.image_path + skuDetailImageFile
-                            row[26] = len(settings.colors) + colorIndex # file itself is now randomised
+                            row[26] = len(settings.colors) + colorIndex + 1 # file itself is now randomised
                             row[27] = imgAltText
 
                     # fill information for SKUs
