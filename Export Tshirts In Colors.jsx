@@ -1,5 +1,6 @@
 // get the designlayer
 // V2.0 - Multiple Designs Style as per colors (Light, Dark etc.)
+// add to PS path (example - C:\Program Files\Adobe\Adobe Photoshop 2023\Presets\Scripts)
 var lays = app.activeDocument.layers;
 var designLayer = lays[0].layers.getByName("MyDesign"); // design layers
 var bgLays = lays[1].layers; // background layers
