@@ -1,7 +1,6 @@
 // Simple Replace Image in a Text + Image PSD, Then Export
 // Version 2.0 - Multiple Designs as per colors (Light, Dark etc.)
 // add to PS path (example - C:\Program Files\Adobe\Adobe Photoshop 2023\Presets\Scripts)
-
 // get the designlayer
 var designLayer = app.activeDocument.layers.getByName("MyDesign"); // design layer
 var captionLayer = app.activeDocument.layers.getByName("Caption"); // caption text layer
