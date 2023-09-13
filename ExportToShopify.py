@@ -119,6 +119,7 @@ def ExportCSVFile(index, folder, settings):
     # Get the file names in the design folder
     # TODO: (Hack) for now just use the dark folder, 
     # Correct Way - Eventually get files from all folders and do a union
+    # For now doesn't matter, because product and detail images are in same folder eventually
     files = os.listdir(folder+"\designs\Dark")
 
     # Get the file names in the media folder
