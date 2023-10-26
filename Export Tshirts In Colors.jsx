@@ -1,6 +1,6 @@
 // get the designlayer
 // V2.0 - Multiple Designs Style as per colors (Light, Dark etc.)
-// add to PS path (example - C:\Program Files\Adobe\Adobe Photoshop 2023\Presets\Scripts)
+// add to PS path (example - C:\Program Files\Adobe\Adobe Photoshop 2024\Presets\Scripts)
 var templatePath = "C:\\Users\\Amit Velingkar\\TShirts\\PSD Templates\\T-Shirt-Hanging-Mockup-v8.psd";
 
 // Ask user for input folder
