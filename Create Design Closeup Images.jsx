@@ -1,9 +1,20 @@
 // bouding array for cropping
-var cropX = 500;
-var cropY = 510;
-var cropW = 300;
-var cropH = 450;
+var cropX = 450;
+var cropY = 400;
+var cropW = 400;
+var cropH = 550;
 var region = Array(cropX,cropY,cropX+cropW,cropY+cropH);
+var scale = 3; // scale image by x
+
+// save current preferences
+var orgRulerUnits = app.preferences.rulerUnits;
+var orgTypeUnits = app.preferences.typeUnits;
+var orgDisplayDialogs = app.displayDialogs;
+
+//set to use pixels and show no dialogs
+app.preferences.rulerUnits = Units.PIXELS;
+app.preferences.typeUnits  = TypeUnits.PIXELS;
+app.displayDialogs  = DialogModes.NO;
 
 // Ask user for input folder
 var inputFolder = Folder.selectDialog("Select folder with designs");
@@ -23,7 +34,7 @@ if (inputFolder != null) {
 
             // crop, resize and export
             curDoc.crop(region);
-            curDoc.resizeImage(cropW*3,cropH*3);
+            curDoc.resizeImage(cropW*scale,cropH*scale);
 
             // paste water mark
             curDoc.paste();
@@ -38,6 +49,11 @@ if (inputFolder != null) {
     }
     // close doc without saving
     watermarkDoc.close(SaveOptions.DONOTSAVECHANGES);
+
+    // restore original settings
+    app.preferences.rulerUnits = orgRulerUnits;
+    app.preferences.typeUnits  = orgTypeUnits;
+    app.displayDialogs  = orgDisplayDialogs;
 
     alert ("Export Completed !");
 }
