@@ -37,7 +37,7 @@ if (inputFolder != null && designLayer != null && captionLayer != null) {
             for (var j=0; j< captions.length; j++) {
                 if (j>0) captions[j-1].visible = false; // make previous layer invisible
                 captions[j].visible = true;
-                exportAsPNG(exportFolderPath + captions[j].name,fileName);
+                saveAsPSD(exportFolderPath + captions[j].name,fileName);
             }
         }
     }
