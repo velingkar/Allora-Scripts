@@ -1,6 +1,6 @@
 // dpi value to save print
 var dpi = 300; // save to 300 dpi
-var scale = 1; // save N times the size
+var scale = 2; // save N times the size
 var resMethod = ResampleMethod.BICUBIC;
 
 // save current preferences
@@ -26,11 +26,16 @@ if (inputFolder != null) {
 
 
             // resize and export
-            curDoc.resizeImage(curDoc.width*scale,curDoc.height*scale,300,resMethod);
+            curDoc.resizeImage(curDoc.width*scale,curDoc.height*scale,dpi,resMethod);
 
-            //export as PNG
+            // add info
+            curDoc.info.author = "Allorio Private Limited";
+            curDoc.info.copyrightNotice = "Copyright (c) Allorio Private Limited";
+            curDoc.info.copyrighted = CopyrightedType.COPYRIGHTEDWORK;
+
+            //save as PNG
             var fileName =  fileList[i].name.match(/(.*)\.[^\.]+$/)[1];
-            exportAsPNG(fileList[i].path + "/HighRes/",fileName);
+            saveAsPNG(fileList[i].path + "/HighRes/",fileName);
 
             // close doc without saving
             curDoc.close(SaveOptions.DONOTSAVECHANGES);
@@ -44,6 +49,18 @@ if (inputFolder != null) {
     alert ("Export Completed !");
 }
 
+function saveAsPNG(filepath, filename) {
+    var opts = new PNGSaveOptions();
+
+    var exportFolder = Folder(filepath);
+    if (!exportFolder.exists) exportFolder.create();
+
+    var pngFile = new File(filepath + filename + ".png");
+    app.activeDocument.saveAs(pngFile, opts);
+}
+
+// creates lossy files (72 dpi) - to be deprecated
+/*
 function exportAsPNG(filepath, filename) {
     var opts     = new ExportOptionsSaveForWeb();
     opts.format  = SaveDocumentType.PNG;
@@ -56,3 +73,4 @@ function exportAsPNG(filepath, filename) {
     var pngFile = new File(filepath + filename + ".png");
     app.activeDocument.exportDocument(pngFile, ExportType.SAVEFORWEB, opts);
 }
+*/
