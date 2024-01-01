@@ -1,6 +1,17 @@
 // Simple Replace Image in a Text + Image PSD, Then Export
 // Version 2.0 - Multiple Designs as per colors (Light, Dark etc.)
 // add to PS path (example - C:\Program Files\Adobe\Adobe Photoshop 2023\Presets\Scripts)
+
+// save current preferences
+var orgRulerUnits = app.preferences.rulerUnits;
+var orgTypeUnits = app.preferences.typeUnits;
+var orgDisplayDialogs = app.displayDialogs;
+
+//set to use pixels and show no dialogs
+app.preferences.rulerUnits = Units.PIXELS;
+app.preferences.typeUnits  = TypeUnits.PIXELS;
+app.displayDialogs  = DialogModes.NO;
+
 // get the designlayer
 var designLayer = app.activeDocument.layers.getByName("MyDesign"); // design layer
 var captionLayer = app.activeDocument.layers.getByName("Caption"); // caption text layer
@@ -41,6 +52,10 @@ if (inputFolder != null && designLayer != null && captionLayer != null) {
             }
         }
     }
+    // restore original settings
+    app.preferences.rulerUnits = orgRulerUnits;
+    app.preferences.typeUnits  = orgTypeUnits;
+    app.displayDialogs  = orgDisplayDialogs;
 
     alert ("Export Completed !");
 }
@@ -80,8 +95,8 @@ function saveAsPNG(filepath, filename) {
     var exportFolder = Folder(filepath);
     if (!exportFolder.exists) exportFolder.create();
 
-    var pngFile = new File(filepath + filename + ".png");
-    app.activeDocument.saveAs(pngFile, opts);
+    var pngFile = new File(filepath + "/" + fileName + ".png");
+    app.activeDocument.saveAs(pngFile, opts, true);
 }
 
 // creates lossy files (72 dpi) - to be deprecated
