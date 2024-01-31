@@ -1,11 +1,3 @@
-// bouding array for cropping
-var cropX = 425;
-var cropY = 400;
-var cropW = 450;
-var cropH = 550;
-var region = Array(cropX,cropY,cropX+cropW,cropY+cropH);
-var scale = 3; // scale image by x
-
 // save current preferences
 var orgRulerUnits = app.preferences.rulerUnits;
 var orgTypeUnits = app.preferences.typeUnits;
@@ -20,36 +12,26 @@ app.displayDialogs  = DialogModes.NO;
 var inputFolder = Folder.selectDialog("Select folder with designs");
 
 if (inputFolder != null) {
-    // get watermark 
-    var watermarkPath = "C:\\Users\\Amit Velingkar\\TShirts\\Media\\Logos\\Watermark.png";
-    var watermarkDoc = open(File(watermarkPath));
-    watermarkDoc.activeLayer.copy();
-
     // get all PNG files
-    var fileList = inputFolder.getFiles("*.png");
+    var fileList = inputFolder.getFiles("*.psd");
     for (var i=0; i< fileList.length; i++) {
         if (fileList[i] instanceof File) {
             // open the file
             var curDoc = open(fileList[i]);
 
-            // crop, resize and export
-            curDoc.crop(region);
-            curDoc.resizeImage(cropW*scale,cropH*scale);
+            // add info
+            curDoc.info.author = "Allorio Private Limited";
+            curDoc.info.copyrightNotice = "Copyright (c) Allorio Private Limited";
+            curDoc.info.copyrighted = CopyrightedType.COPYRIGHTEDWORK;
 
-            // paste water mark
-            curDoc.paste();
-
-            //export as PNG
+            //save as PNG
             var fileName =  fileList[i].name.match(/(.*)\.[^\.]+$/)[1];
-            exportAsPNG(fileList[i].path + "/detail/",fileName + "_detail");
+            saveAsPNG(fileList[i].path + "/PNG/",fileName);
 
             // close doc without saving
             curDoc.close(SaveOptions.DONOTSAVECHANGES);
         }
     }
-    // close doc without saving
-    watermarkDoc.close(SaveOptions.DONOTSAVECHANGES);
-
     // restore original settings
     app.preferences.rulerUnits = orgRulerUnits;
     app.preferences.typeUnits  = orgTypeUnits;
@@ -58,6 +40,18 @@ if (inputFolder != null) {
     alert ("Export Completed !");
 }
 
+function saveAsPNG(filepath, filename) {
+    var opts = new PNGSaveOptions();
+
+    var exportFolder = Folder(filepath);
+    if (!exportFolder.exists) exportFolder.create();
+
+    var pngFile = new File(filepath + filename + ".png");
+    app.activeDocument.saveAs(pngFile, opts);
+}
+
+// creates lossy files (72 dpi) - to be deprecated
+/*
 function exportAsPNG(filepath, filename) {
     var opts     = new ExportOptionsSaveForWeb();
     opts.format  = SaveDocumentType.PNG;
@@ -70,3 +64,4 @@ function exportAsPNG(filepath, filename) {
     var pngFile = new File(filepath + filename + ".png");
     app.activeDocument.exportDocument(pngFile, ExportType.SAVEFORWEB, opts);
 }
+*/
