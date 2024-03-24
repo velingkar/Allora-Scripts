@@ -19,10 +19,10 @@ var inputFolder = Folder.selectDialog("Select folder with designs");
 if (inputFolder != null) {
     // get all PNG files
     var fileList = inputFolder.getFiles("*.png");
-    for (var i=0; i< fileList.length; i++) {
-        if (fileList[i] instanceof File) {
+    for (var j=0; j< fileList.length; j++) {
+        if (fileList[j] instanceof File) {
             // open the file
-            var curDoc = open(fileList[i]);
+            var curDoc = open(fileList[j]);
 
 
             // resize and export
@@ -34,8 +34,8 @@ if (inputFolder != null) {
             curDoc.info.copyrighted = CopyrightedType.COPYRIGHTEDWORK;
 
             //save as PNG
-            var fileName =  fileList[i].name.match(/(.*)\.[^\.]+$/)[1];
-            saveAsPNG(fileList[i].path + "/HighRes/",fileName);
+            var fileName =  fileList[j].name.match(/(.*)\.[^\.]+$/)[1];
+            saveAsPNG(fileList[j].path + "/HighRes/",fileName);
 
             // close doc without saving
             curDoc.close(SaveOptions.DONOTSAVECHANGES);
