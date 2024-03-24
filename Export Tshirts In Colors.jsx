@@ -11,8 +11,8 @@ if (inputFolder != null) {
     var lays = templateDoc.layers;
     var designLayer = lays[0].layers.getByName("MyDesign"); // design layers
     var bgLays = lays[1].layers; // background layers
-    var bgColors = bgLays[2].layers; // color layers
-    if(designLayer != null && bgColors != null) {
+    var colors = bgLays[2].layers; // color layers
+    if(designLayer != null && colors != null) {
         // get all PNG files
         var fileList = inputFolder.getFiles("*.png");
 
@@ -21,11 +21,11 @@ if (inputFolder != null) {
         for (var i=0; i< fileList.length; i++) {
             if (fileList[i] instanceof File) {
                 var fileName =  fileList[i].name.match(/(.*)\.[^\.]+$/)[1];
-                for (var j=0; j< bgColors.length; j++) {
-                    if (j>0) bgColors[j-1].visible = false; // make previous layer invisible
-                    bgColors[j].visible = true; // make new color layer visisble
+                for (var j=0; j< colors.length; j++) {
+                    if (j>0) colors[j-1].visible = false; // make previous layer invisible
+                    colors[j].visible = true; // make new color layer visisble
 
-                    var layerInfo = bgColors[j].name.split("_");
+                    var layerInfo = colors[j].name.split("_");
                     var colorName = layerInfo[0];
                     var styleName = layerInfo[1];
 
